@@ -1,0 +1,25 @@
+{
+  "name": "岸边 · 智能选钓位",
+  "short_name": "岸边",
+  "description": "商洛实时天气、水岸结构识别、钓位与鱼饵味型建议。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f0e7",
+  "theme_color": "#173f35",
+  "lang": "zh-CN",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#143d33" />
+    <meta
+      name="description"
+      content="商洛实时天气、鱼种建议、实时相机钓位与岸线结构识别。"
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/app-icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>岸边 · 商洛钓位</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="岸边首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40">
+              <path d="M5 14c4-4 8-4 12 0s8 4 12 0 8-4 10 0" />
+              <path d="M5 22c4-4 8-4 12 0s8 4 12 0 8-4 10 0" />
+              <path d="M5 30c4-4 8-4 12 0s8 4 12 0 8-4 10 0" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>岸边</strong>
+            <small>SHANGLUO FISHING</small>
+          </span>
+        </a>
+        <button class="location-pill" id="aboutButton" type="button">
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M10 18s5-4.7 5-9a5 5 0 1 0-10 0c0 4.3 5 9 5 9Z"></path>
+            <circle cx="10" cy="9" r="1.7"></circle>
+          </svg>
+          陕西 · 商洛
+          <i id="weatherLiveDot"></i>
+        </button>
+      </header>
+
+      <main>
+        <section id="introSection">
+          <article class="weather-card">
+            <div class="weather-head">
+              <div>
+                <span class="overline">实时天气</span>
+                <div class="weather-main">
+                  <strong id="weatherTemp">--°</strong>
+                  <span>
+                    <b id="weatherCondition">正在获取</b>
+                    <small id="weatherUpdated">商洛市中心 · 加载中</small>
+                  </span>
+                </div>
+              </div>
+              <div class="weather-symbol" id="weatherSymbol" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <circle cx="23" cy="23" r="10"></circle>
+                  <path d="M12 45h36a10 10 0 0 0 0-20 15 15 0 0 0-28-3 12 12 0 0 0-8 23Z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="weather-metrics">
+              <span><small>风</small><b id="weatherWind">--</b></span>
+              <span><small>湿度</small><b id="weatherHumidity">--</b></span>
+              <span><small>气压</small><b id="weatherPressure">--</b></span>
+              <span><small>降水</small><b id="weatherRain">--</b></span>
+            </div>
+            <p class="weather-source">
+              <span id="weatherSource">Open-Meteo</span> 数值预报
+              <button class="text-button" id="weatherRefreshButton" type="button">刷新</button>
+            </p>
+          </article>
+
+          <article class="decision-card">
+            <div class="decision-top">
+              <div>
+                <span class="overline light">今日判断</span>
+                <h1 id="dailyHeadline">正在判断水边机会</h1>
+              </div>
+              <div class="score-ring" id="dailyScoreRing">
+                <span id="dailyScore">--</span>
+              </div>
+            </div>
+            <p class="decision-reason" id="dailyAdvice">读取天气、气压与风向后给出建议。</p>
+            <div class="decision-meta">
+              <span>
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7"></circle>
+                  <path d="M10 6v4l3 2"></path>
+                </svg>
+                建议窗口 <b id="bestWindow">--</b>
+              </span>
+              <span id="dailyLevel">--</span>
+            </div>
+            <div class="brief-fish" id="briefFishList"></div>
+          </article>
+
+          <section class="capture-card">
+            <div class="camera-visual" aria-hidden="true">
+              <svg viewBox="0 0 720 300" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#d8d7b7" />
+                    <stop offset="1" stop-color="#88a994" />
+                  </linearGradient>
+                  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#547b73" />
+                    <stop offset="1" stop-color="#153e39" />
+                  </linearGradient>
+                </defs>
+                <rect width="720" height="300" fill="url(#sky)" />
+                <path d="M0 105 92 51l74 37 81-62 76 49 93-61 112 62 77-24 115 42v80H0Z" fill="#315c48" />
+                <path d="M0 137c103-20 177 12 269-4 110-19 214-11 451-4v171H0Z" fill="url(#water)" />
+                <path d="M0 300c78-77 172-88 287-63 78 17 143 83 243 57 62-16 116-67 190-54v60H0Z" fill="#806943" />
+                <g fill="none" stroke="#dce1c2" stroke-width="2" opacity=".4">
+                  <path d="M249 172h175M191 203h239M339 233h203" />
+                </g>
+                <g fill="#f4e7be">
+                  <circle cx="335" cy="172" r="17" />
+                  <circle cx="467" cy="208" r="17" />
+                  <circle cx="578" cy="235" r="17" />
+                </g>
+                <g fill="#173f35" font-family="Georgia,serif" font-size="16" font-weight="700" text-anchor="middle">
+                  <text x="335" y="178">1</text>
+                  <text x="467" y="214">2</text>
+                  <text x="578" y="241">3</text>
+                </g>
+              </svg>
+              <span class="visual-label">实时识别水岸结构</span>
+            </div>
+            <div class="capture-copy">
+              <div>
+                <span class="overline">开始选位</span>
+                <h2>让镜头替你读河。</h2>
+                <p>实时框线识别，数字标出结构；锁定画面后给出首选位与鱼种。</p>
+              </div>
+              <div class="capture-buttons">
+                <button class="primary-button" id="startLiveButton" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 8h3l1.4-2h7.2L17 8h3v11H4Z"></path>
+                    <circle cx="12" cy="13" r="3.3"></circle>
+                  </svg>
+                  实时识别
+                </button>
+                <button class="secondary-button" id="cameraButton" type="button">
+                  拍照
+                </button>
+                <button class="secondary-button" id="albumButton" type="button">
+                  相册
+                </button>
+              </div>
+              <button class="demo-link" id="demoButton" type="button">
+                试用示例河岸
+                <svg viewBox="0 0 18 18" aria-hidden="true"><path d="m6 3 6 6-6 6" /></svg>
+              </button>
+            </div>
+          </section>
+
+          <p class="privacy-line">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 2 4 4.5v5C4 13.6 6.6 16.3 10 18c3.4-1.7 6-4.4 6-8.5v-5Z"></path>
+              <path d="m7.3 9.8 1.8 1.8 3.6-3.7"></path>
+            </svg>
+            照片仅在设备本地分析
+          </p>
+          <input id="photoInput" type="file" accept="image/*" capture="environment" hidden />
+          <input id="albumInput" type="file" accept="image/*" hidden />
+        </section>
+
+        <section class="processing hidden" id="processingSection" aria-live="polite">
+          <div class="processing-photo">
+            <img id="processingImage" alt="正在分析的河岸照片" />
+            <div class="scan-beam"></div>
+          </div>
+          <div class="processing-copy">
+            <span class="overline light">正在读河</span>
+            <h2>寻找岸线与结构</h2>
+            <div class="processing-steps">
+              <span data-step="0" class="active">水陆边界</span>
+              <span data-step="1">结构数字</span>
+              <span data-step="2">钓位排序</span>
+              <span data-step="3">天气与鱼种</span>
+            </div>
+            <div class="progress-track"><i id="progressBar"></i></div>
+          </div>
+        </section>
+
+        <section class="results hidden" id="resultsSection">
+          <div class="section-title">
+            <div>
+              <span class="overline">识别完成</span>
+              <h2>先看 <em id="leadStructure">1 鱼道</em></h2>
+              <p id="sceneDescription">水面与岸线结构已标出。</p>
+            </div>
+            <button class="round-button" id="retakeButton" type="button" aria-label="重新拍摄">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 8h3l1.4-2h7.2L17 8h3v11H4Z"></path>
+                <circle cx="12" cy="13" r="3.3"></circle>
+              </svg>
+            </button>
+          </div>
+
+          <div class="photo-stage" id="photoStage">
+            <img id="resultImage" alt="正在分析的商洛河岸" />
+            <canvas id="overlayCanvas" aria-label="数字结构标注"></canvas>
+            <button class="expand-button" id="expandPhotoButton" type="button" aria-label="放大照片">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4M13 3h4v4M3 13v4h4M17 13v4h-4" /></svg>
+            </button>
+          </div>
+
+          <div class="structure-legend" id="structureLegend"></div>
+
+          <div class="result-grid">
+            <article class="best-card">
+              <div class="best-heading">
+                <span class="spot-pin">荐</span>
+                <div>
+                  <small>首选钓位 · <span id="confidenceValue">--</span> 画面可信</small>
+                  <h3 id="bestSpotTitle">岸边结构外沿</h3>
+                  <p id="bestSpotType">等待识别</p>
+                </div>
+                <strong id="bestScore">--</strong>
+              </div>
+              <div class="reason-row" id="bestReasons"></div>
+              <p class="best-action" id="bestApproach">先观察岸边稳固情况。</p>
+              <div class="spot-switcher" id="spotSwitcher"></div>
+            </article>
+
+            <article class="weather-context">
+              <span class="overline">此刻水边</span>
+              <h3 id="sceneTitle">商洛河谷</h3>
+              <div class="chips" id="sceneChips"></div>
+              <div class="weather-context-note">
+                <span>当前判断</span>
+                <strong id="sceneWeatherAdvice">正在匹配天气</strong>
+              </div>
+            </article>
+          </div>
+
+          <section class="fish-section">
+            <div class="fish-heading">
+              <div>
+                <span class="overline">今日鱼种与味型</span>
+                <h3>天气决定饵料，结构决定下竿点</h3>
+              </div>
+              <span class="season-pill" id="seasonTag">商洛 · 秋季</span>
+            </div>
+            <div class="fish-list" id="fishList"></div>
+            <p class="fish-disclaimer">匹配度是环境适宜度，不是鱼获概率。保护物种不参与推荐。</p>
+          </section>
+
+          <details class="adjust-section" id="adjustSection">
+            <summary>
+              <span>现场修正</span>
+              <small id="adjustSummary">自动：水色正常 · 缓流</small>
+              <svg viewBox="0 0 18 18" aria-hidden="true"><path d="m4 6 5 5 5-5" /></svg>
+            </summary>
+            <div class="adjust-fields">
+              <label><span>季节</span><select id="seasonSelect"><option value="auto">自动</option><option value="spring">春</option><option value="summer">夏</option><option value="autumn">秋</option><option value="winter">冬</option></select></label>
+              <label><span>时段</span><select id="timeSelect"><option value="auto">自动</option><option value="morning">清晨</option><option value="noon">白天</option><option value="evening">傍晚</option><option value="night">夜间</option></select></label>
+              <label><span>水色</span><select id="waterSelect"><option value="auto">自动</option><option value="clear">偏清</option><option value="normal">正常</option><option value="muddy">偏浑</option></select></label>
+              <label><span>水流</span><select id="flowSelect"><option value="auto">自动</option><option value="still">静水</option><option value="slow">缓流</option><option value="fast">急流</option></select></label>
+            </div>
+          </details>
+
+          <div class="safety-line">
+            <svg viewBox="0 0 22 22" aria-hidden="true">
+              <path d="M11 2.5 3.5 19h15Z"></path><path d="M11 8v4.5M11 16h.01"></path>
+            </svg>
+            <span><b>先确认安全。</b>岸体、水深、电线和涨水无法由照片判断；陌生河岸不要独行。</span>
+          </div>
+          <button class="another-button" id="anotherButton" type="button">重新选一处</button>
+        </section>
+      </main>
+
+      <footer>
+        <span>岸边 · 商洛</span>
+        <p>天气：<a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> 数值预报</p>
+        <button class="text-button" id="footerAboutButton" type="button">数据与识别说明</button>
+      </footer>
+    </div>
+
+    <dialog class="live-dialog" id="liveDialog">
+      <div class="live-shell">
+        <header class="live-header">
+          <div>
+            <span class="live-dot"></span>
+            <strong>实时识别</strong>
+            <small id="liveStatus">正在启动相机</small>
+          </div>
+          <button class="live-close" id="closeLiveButton" type="button" aria-label="关闭实时识别">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg>
+          </button>
+        </header>
+        <div class="live-stage">
+          <video id="liveVideo" autoplay playsinline muted></video>
+          <canvas id="liveOverlay"></canvas>
+          <div class="live-reticle"></div>
+          <div class="live-legend" id="liveStructureLegend"></div>
+        </div>
+        <div class="live-controls">
+          <p>镜头放低，把近岸、水面与对岸一起框入。数字为疑似结构。</p>
+          <div>
+            <button class="live-flip" id="flipCameraButton" type="button">
+              <svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 8a8 8 0 0 1 13-2M18 14a8 8 0 0 1-13 2"></path><path d="M4 3v5h5M18 19v-5h-5"></path></svg>
+            </button>
+            <button class="live-capture" id="liveCaptureButton" type="button">锁定此画面</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="aboutDialog">
+      <button class="dialog-close-icon" id="closeAboutButton" type="button" aria-label="关闭">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg>
+      </button>
+      <span class="overline">数据与边界</span>
+      <h2>这是一张岸景照片，<br />不是声呐。</h2>
+      <p>天气来自 Open-Meteo 商洛市中心坐标的数值预报，每 10 分钟刷新，不等同于河边气象站实测。</p>
+      <p>鱼种库覆盖秦岭—汉江河谷常见目标鱼。保护水生动物不会参与推荐，实际禁钓范围必须以当地公告为准。</p>
+      <p>鱼道、水道、陡坎和斜坡由岸线、水色、明暗连续性推断；数字标注只代表“值得现场确认”，不保证水下真实地形。</p>
+      <p>实时相机需要 HTTPS 或 localhost。局域网 HTTP 页面可改用“拍照”入口。</p>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
